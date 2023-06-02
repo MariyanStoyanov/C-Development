@@ -1,0 +1,127 @@
+Stack<int> medicamets = new();
+Queue<int> textile = new();
+Dictionary<string, int> items = new();
+SortedDictionary<string, int> craftedItems = new();
+
+items.Add("Patch",30);
+items.Add("Bandage", 40);
+items.Add("MedKit", 100);
+
+int[] input = Console.ReadLine()
+    .Split(" ",StringSplitOptions.RemoveEmptyEntries)
+    .Select(int.Parse)
+    .ToArray();
+
+for (int i = 0; i < input.Length; i++)
+{
+    textile.Enqueue(input[i]);
+}
+
+input = Console.ReadLine()
+    .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+    .Select(int.Parse)
+    .ToArray();
+
+for (int i = 0; i < input.Length; i++)
+{
+    medicamets.Push(input[i]);
+}
+
+while(medicamets.Count > 0 && textile.Count > 0)
+{
+    if(medicamets.Peek() + textile.Peek() == 100)
+    {
+        if(!craftedItems.ContainsKey("MedKit"))
+        {
+            craftedItems.Add("MedKit", 1);
+            medicamets.Pop();
+            textile.Dequeue();
+        }
+        else
+        {
+            craftedItems["MedKit"]++;
+            medicamets.Pop();
+            textile.Dequeue();
+        }
+    }
+    else if(medicamets.Peek() + textile.Peek() == 40)
+    {
+        if (!craftedItems.ContainsKey("Bandage"))
+        {
+            craftedItems.Add("Bandage", 1);
+            medicamets.Pop();
+            textile.Dequeue();
+        }
+        else
+        {
+            craftedItems["Bandage"]++;
+            medicamets.Pop();
+            textile.Dequeue();
+        }
+    }
+    else if (medicamets.Peek() + textile.Peek() == 30)
+    {
+        if (!craftedItems.ContainsKey("Patch"))
+        {
+            craftedItems.Add("Patch", 1);
+            medicamets.Pop();
+            textile.Dequeue();
+        }
+        else
+        {
+            craftedItems["Patch"]++;
+            medicamets.Pop();
+            textile.Dequeue();
+        }
+    }
+    else if(medicamets.Peek() + textile.Peek() > 100)
+    {
+        int difference = Math.Abs(100 - (medicamets.Pop() + textile.Dequeue()));
+        int next = medicamets.Pop();
+        medicamets.Push(next + difference);
+        
+        if (!craftedItems.ContainsKey("MedKit"))
+        {
+            craftedItems.Add("MedKit", 1);
+            
+        }
+        else
+        {
+            craftedItems["MedKit"]++;
+            
+        }
+    }
+    else
+    {
+        textile.Dequeue();
+        int plusTen = medicamets.Pop();
+        medicamets.Push(plusTen + 10);
+    }
+}
+
+if(medicamets.Count == 0 && textile.Count == 0)
+{
+    Console.WriteLine("Textiles and medicaments are both empty.");
+    foreach(var item in craftedItems.OrderByDescending(x => x.Value))
+    {
+        Console.WriteLine($"{item.Key} - {item.Value}");
+    }
+}
+else if(textile.Count == 0)
+{
+    Console.WriteLine("Textiles are empty.");
+    foreach (var item in craftedItems.OrderByDescending(x => x.Value))
+    {
+        Console.WriteLine($"{item.Key} - {item.Value}");
+    }
+    Console.WriteLine($"Medicaments left: {string.Join(", ",medicamets)}");
+}
+else if(medicamets.Count == 0)
+{
+    Console.WriteLine("Medicaments are empty.");
+    foreach (var item in craftedItems.OrderByDescending(x => x.Value))
+    {
+        Console.WriteLine($"{item.Key} - {item.Value}");
+    }
+    Console.WriteLine($"Textiles left: {string.Join(", ", textile)}");
+}
