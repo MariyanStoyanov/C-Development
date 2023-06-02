@@ -1,0 +1,151 @@
+int[] dimentions = Console.ReadLine()
+    .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+    .Select(int.Parse)
+    .ToArray();
+
+
+int rows = dimentions[0];
+int cols = dimentions[1];
+int playerRow = 0;
+int playerCol = 0;
+
+string[,] matrix = new string[rows, cols];
+string[] input = Console.ReadLine()
+    .Split(" ",StringSplitOptions.RemoveEmptyEntries)
+    .ToArray();
+
+for(int row = 0;row < rows;row++)
+{
+    for (int col = 0; col < cols; col++)
+    {
+        matrix[row,col] = input[col];
+        if (input[col] == "B")
+        {
+            playerCol = col;
+            playerRow = row;
+        }
+    }
+    if(row != rows - 1)
+    {
+      input = Console.ReadLine()
+     .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+     .ToArray();
+    }
+}
+string command = null;
+int moves = 0;
+int playersTouched = 0;
+while((command = Console.ReadLine()) != "Finish")
+{
+    if(command == "up")
+    {
+        if (playerRow - 1 < 0)
+        {
+            continue;
+        }
+        else if (matrix[playerRow - 1,playerCol] == "O")
+        {
+            continue;
+        }
+        else if(matrix[playerRow - 1,playerCol] == "P")
+        {
+            playersTouched++;
+            moves++;
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow - 1, playerCol] = "B";
+            playerRow--;
+        }
+        else if(matrix[playerRow - 1, playerCol] == "-")
+        {
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow - 1, playerCol] = "B";
+            moves++;
+            playerRow--;
+        }
+
+    }
+    else if(command == "down")
+    {
+        if (playerRow + 1 > rows - 1)
+        {
+            continue;
+        }
+        else if (matrix[playerRow + 1, playerCol] == "O")
+        {
+            continue;
+        }
+        else if (matrix[playerRow + 1, playerCol] == "P")
+        {
+            playersTouched++;
+            moves++;
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow + 1, playerCol] = "B";
+            playerRow++;
+        }
+        else if (matrix[playerRow + 1, playerCol] == "-")
+        {
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow + 1, playerCol] = "B";
+            moves++;
+            playerRow++;
+        }
+    }
+    else if(command == "left")
+    {
+        if (playerCol - 1 < 0)
+        {
+            continue;
+        }
+        else if (matrix[playerRow, playerCol - 1] == "O")
+        {
+            continue;
+        }
+        else if (matrix[playerRow, playerCol - 1] == "P")
+        {
+            playersTouched++;
+            moves++;
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow, playerCol - 1] = "B";
+            playerCol--;
+        }
+        else if (matrix[playerRow, playerCol - 1] == "-")
+        {
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow, playerCol - 1] = "B";
+            moves++;
+            playerCol--;
+        }
+    }
+    else if(command == "right")
+    {
+        if (playerCol + 1 > cols - 1)
+        {
+            continue;
+        }
+        else if (matrix[playerRow, playerCol + 1] == "O")
+        {
+            continue;
+        }
+        else if (matrix[playerRow, playerCol + 1] == "P")
+        {
+            playersTouched++;
+            moves++;
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow, playerCol + 1] = "B";
+            playerCol++;
+        }
+        else if (matrix[playerRow, playerCol + 1] == "-")
+        {
+            matrix[playerRow, playerCol] = "-";
+            matrix[playerRow, playerCol + 1] = "B";
+            moves++;
+            playerCol++;
+        }
+    }
+    if(playersTouched == 3)
+    {
+        break;
+    }
+}
+Console.WriteLine("Game over!");
+Console.WriteLine($"Touched opponents: {playersTouched} Moves made: {moves}");
